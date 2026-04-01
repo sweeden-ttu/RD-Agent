@@ -1,0 +1,45 @@
+{
+  "$id": "https://example.com/aes-experiment-output.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AES experiment producer output",
+  "type": "object",
+  "properties": {
+    "assistant": {
+      "type": "string",
+      "description": "Identifier for the producing assistant"
+    },
+    "tokens": {
+      "type": "string",
+      "description": "Primary token payload; may embed a JSON string containing a cells array for notebook patches"
+    },
+    "name": { "type": "string" },
+    "age": { "type": "integer", "minimum": 0 },
+    "address": {
+      "type": "object",
+      "properties": {
+        "street": { "type": "string" },
+        "property": { "type": "string" },
+        "findings": { "type": "string" },
+        "thinking": { "type": "string", "pattern": "^\\d{5}$" }
+      },
+      "required": ["property", "findings", "thinking"]
+    },
+    "findings": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "cells": {
+      "type": "array",
+      "description": "Optional direct notebook cell patches",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cell_index": { "type": "integer" },
+          "source": { "type": "string" }
+        },
+        "required": ["cell_index", "source"]
+      }
+    }
+  },
+  "required": ["assistant", "tokens"]
+}

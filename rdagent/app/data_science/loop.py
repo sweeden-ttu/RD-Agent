@@ -1,6 +1,23 @@
 import asyncio
+import sys
 from pathlib import Path
 from typing import Optional
+
+for _root in Path(__file__).resolve().parents:
+    if (_root / "rdagent" / "app" / "cli.py").is_file():
+        _s = str(_root)
+        if _s not in sys.path:
+            sys.path.insert(0, _s)
+        break
+
+try:
+    import loguru  # noqa: F401
+except ModuleNotFoundError as _e:
+    raise SystemExit(
+        "RD-Agent dependencies are missing (e.g. loguru). From the RD-Agent repo root, use conda and run:\n"
+        "  conda activate <your-env> && pip install -e .\n"
+        "Homebrew Python is PEP 668–managed; install into a conda env, not system Python."
+    ) from _e
 
 import fire
 

@@ -45,6 +45,29 @@ LITELLM_SETTINGS = LiteLLMSettings()
 ACC_COST = 0.0
 
 
+def _litellm_chat_api_credentials() -> dict[str, str]:
+    """Optional api_key/api_base from settings; omit keys so LiteLLM falls back to process env."""
+    out: dict[str, str] = {}
+    key = LITELLM_SETTINGS.chat_openai_api_key or LITELLM_SETTINGS.openai_api_key
+    if key:
+        out["api_key"] = key
+    base = LITELLM_SETTINGS.chat_openai_base_url or LITELLM_SETTINGS.openai_api_base
+    if base:
+        out["api_base"] = base
+    return out
+
+
+def _litellm_embedding_api_credentials() -> dict[str, str]:
+    out: dict[str, str] = {}
+    key = LITELLM_SETTINGS.embedding_openai_api_key or LITELLM_SETTINGS.openai_api_key
+    if key:
+        out["api_key"] = key
+    base = LITELLM_SETTINGS.embedding_openai_base_url or LITELLM_SETTINGS.openai_api_base
+    if base:
+        out["api_base"] = base
+    return out
+
+
 class LiteLLMAPIBackend(APIBackend):
     """LiteLLM implementation of APIBackend interface"""
 
@@ -82,6 +105,7 @@ class LiteLLMAPIBackend(APIBackend):
         response = embedding(
             model=model_name,
             input=input_content_list,
+            **_litellm_embedding_api_credentials(),
         )
         response_list = [data["embedding"] for data in response.data]
         return response_list
@@ -156,6 +180,7 @@ class LiteLLMAPIBackend(APIBackend):
             messages=messages,
             stream=LITELLM_SETTINGS.chat_stream,
             max_retries=0,
+            **_litellm_chat_api_credentials(),
             **complete_kwargs,
             **kwargs,
         )

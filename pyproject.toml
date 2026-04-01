@@ -110,6 +110,9 @@ select = ["ALL"]
 [tool.setuptools]
 packages = ["rdagent"]
 
+[tool.setuptools.package-data]
+rdagent = ["app/utils/schemas/*.json"]
+
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 

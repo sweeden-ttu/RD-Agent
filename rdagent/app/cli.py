@@ -31,6 +31,7 @@ from rdagent.app.qlib_rd_loop.factor_from_report import main as fin_factor_repor
 from rdagent.app.qlib_rd_loop.model import main as fin_model
 from rdagent.app.qlib_rd_loop.quant import main as fin_quant
 from rdagent.app.utils.health_check import health_check
+from rdagent.app.utils.improve_notebook import improve_notebook_loop
 from rdagent.app.utils.info import collect_info
 from rdagent.log.mle_summary import grade_summary as grade_summary
 
@@ -189,6 +190,60 @@ def health_check_cli(
     check_ports: CheckPortsOption = True,
 ):
     health_check(check_env=check_env, check_docker=check_docker, check_ports=check_ports)
+
+
+@app.command(name="improve_notebook")
+def improve_notebook_cli(
+    notebook: Annotated[str, typer.Argument(help="Path to the source .ipynb")],
+    output: Annotated[
+        Optional[str],
+        typer.Option(
+            "--output",
+            "-o",
+            help="Output path (default: <name>.improved.ipynb under experiment-dir)",
+        ),
+    ] = None,
+    iterations: Annotated[int, typer.Option("--iterations", "-n", help="Number of LLM improvement passes")] = 1,
+    instruction: Annotated[
+        str,
+        typer.Option("--instruction", "-i", help="Extra instructions for each pass"),
+    ] = "",
+    producer_consumer: Annotated[
+        bool,
+        typer.Option(
+            "--producer-consumer/--no-producer-consumer",
+            help="Consumer then producer with <|assist_stop|>; validates JSON schema and writes artifacts",
+        ),
+    ] = False,
+    single_call: Annotated[
+        bool,
+        typer.Option(
+            "--single-call/--no-single-call",
+            help="One completion: analysis, <|assist_stop|>, then JSON (overrides two-call if both set)",
+        ),
+    ] = False,
+    hypothesis_dir: Annotated[
+        Optional[str],
+        typer.Option("--hypothesis-dir", help="Directory of hypothesis .md/.txt/.json (default: AES_HYPOTHESIS_DIR)"),
+    ] = None,
+    experiment_dir: Annotated[
+        Optional[str],
+        typer.Option("--experiment-dir", help="Artifacts and default output notebook dir (default: AES_EXPERIMENT_DIR)"),
+    ] = None,
+):
+    """Improve markdown and code cells in a Jupyter notebook using the configured chat model."""
+    from pathlib import Path
+
+    improve_notebook_loop(
+        notebook,
+        output_path=output,
+        iterations=iterations,
+        user_instruction=instruction,
+        producer_consumer=producer_consumer,
+        single_call=single_call,
+        hypothesis_dir=Path(hypothesis_dir) if hypothesis_dir else None,
+        experiment_dir=Path(experiment_dir) if experiment_dir else None,
+    )
 
 
 @app.command(name="collect_info")

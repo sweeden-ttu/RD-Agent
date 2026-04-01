@@ -469,3 +469,179 @@ class Experiment2Feedback(ABC):
         """
         error_message = "generate_feedback method is not implemented."
         raise NotImplementedError(error_message)
+
+
+AES_HOMEWORK_PROPOSAL_PSEUDOCODE = """proposal
+Based on the requirements of the homework assignment, here are four pseudocode scaffolding implementations corresponding to Parts A, B, C, and D of the first problem.
+
+The comments within each snippet explain the logic and explicitly state what is omitted and must be implemented by you (such as the underlying math, state saving mechanisms, and specific AES transformations).
+
+### Base AES Tracer Scaffolding (Used by all parts)
+Before executing the experiments, you need a highly configurable `AES_Encrypt_Trace` function that can toggle components on or off, and calculate distances.
+
+```text
+// TODO: Implement the underlying GF(2^8) arithmetic.
+// Specifically, you need to implement xtime() (multiply by 2)
+// and derive multiply-by-3 for standard MixColumns.
+function AES_Encrypt_Trace(plaintext, key, config):
+    state = plaintext
+    round_keys = KeyExpansion(key) // TODO: Implement AES key schedule
+
+    state = AddRoundKey(state, round_keys)
+    log_state("Round 0", "AddRoundKey", state) // TODO: Implement state logging
+
+    for round = 1 to 10:
+        state = SubBytes(state) // TODO: Implement S-box substitution
+        log_state("Round " + round, "SubBytes", state)
+
+        // Configuration hook for Part B
+        if config.disable_shift_rows == False:
+            state = ShiftRows(state) // TODO: Implement row shifting
+        log_state("Round " + round, "ShiftRows", state)
+
+        if round < 10:
+            // Configuration hook for Part C
+            if config.custom_mix_matrix is provided:
+                state = CustomMixColumns(state, config.custom_mix_matrix) // TODO: Matrix mult
+            else:
+                state = MixColumns(state) // TODO: Standard GF(2^8) column mixing
+            log_state("Round " + round, "MixColumns", state)
+
+        state = AddRoundKey(state, round_keys[round])
+        log_state("Round " + round, "AddRoundKey", state)
+
+    return get_all_logged_states()
+```
+
+---
+
+### Part A: Avalanche across rounds (Plaintext Bit Flip)
+**Goal:** Track diffusion when 1 bit of the plaintext is flipped using standard AES.
+
+```text
+function Execute_Part_A():
+    key = initialize_array_16_bytes(0x00) // All-zero key
+    base_plaintext = initialize_array_16_bytes(0x00) // All-zero P
+
+    config = { disable_shift_rows: False, custom_mix_matrix: None } // Standard AES
+
+    // TODO: You must implement a loop to repeat this 10 times,
+    // moving the flipped bit to 10 different positions as requested by the prompt.
+    for i = 1 to 10:
+        // TODO: Implement 'flip_bit_at_position' to modify the base zeros array.
+        modified_plaintext = flip_bit_at_position(base_plaintext, bit_index=i)
+
+        // Run standard trace on both plaintexts
+        states_P = AES_Encrypt_Trace(base_plaintext, key, config)
+        states_P_prime = AES_Encrypt_Trace(modified_plaintext, key, config)
+
+        // Compare intermediate states
+        for each logged stage:
+            // TODO: Implement Hamming distance calculators
+            byte_hd = Calculate_Byte_Hamming_Distance(states_P[stage], states_P_prime[stage])
+            bit_hd = Calculate_Bit_Hamming_Distance(states_P[stage], states_P_prime[stage])
+
+            // TODO: Format output into a table to identify when bit_hd reaches ~64 (50%)
+            print_and_record_results("Part A", stage, byte_hd, bit_hd)
+```
+
+---
+
+### Part B: Disable ShiftRows
+**Goal:** Observe how diffusion degrades when ShiftRows does nothing.
+
+```text
+function Execute_Part_B():
+    key = initialize_array_16_bytes(0x00)
+    base_plaintext = initialize_array_16_bytes(0x00)
+
+    // SCENARIO CHANGE: Disable ShiftRows
+    config = { disable_shift_rows: True, custom_mix_matrix: None }
+
+    for i = 1 to 10:
+        modified_plaintext = flip_bit_at_position(base_plaintext, bit_index=i)
+
+        // TODO: The AES tracer above must bypass the ShiftRows call when this flag is true.
+        states_P = AES_Encrypt_Trace(base_plaintext, key, config)
+        states_P_prime = AES_Encrypt_Trace(modified_plaintext, key, config)
+
+        for each logged stage:
+            // TODO: Reuse distance calculators from Part A
+            byte_hd = Calculate_Byte_Hamming_Distance(states_P[stage], states_P_prime[stage])
+            bit_hd = Calculate_Bit_Hamming_Distance(states_P[stage], states_P_prime[stage])
+
+            // TODO: Record how the avalanche effect differs from Part A
+            print_and_record_results("Part B", stage, byte_hd, bit_hd)
+```
+
+---
+
+### Part C: Modify MixColumns
+**Goal:** Replace the MDS matrix in MixColumns with a custom binary matrix.
+
+```text
+function Execute_Part_C():
+    key = initialize_array_16_bytes(0x00)
+    base_plaintext = initialize_array_16_bytes(0x00)
+
+    // SCENARIO CHANGE: Define the custom matrix provided in the prompt
+    // TODO: Ensure your MixColumns function can accept and multiply by a non-standard matrix.
+    M_new = [
+        [0x01, 0x01, 0x00, 0x00],
+        [0x00, 0x01, 0x01, 0x00],
+        [0x00, 0x00, 0x01, 0x01],
+        [0x00, 0x00, 0x00, 0x01]
+    ]
+
+    config = { disable_shift_rows: False, custom_mix_matrix: M_new }
+
+    for i = 1 to 10:
+        modified_plaintext = flip_bit_at_position(base_plaintext, bit_index=i)
+
+        states_P = AES_Encrypt_Trace(base_plaintext, key, config)
+        states_P_prime = AES_Encrypt_Trace(modified_plaintext, key, config)
+
+        for each logged stage:
+            // TODO: Calculate distances and observe how the weaker matrix affects diffusion.
+            byte_hd = Calculate_Byte_Hamming_Distance(states_P[stage], states_P_prime[stage])
+            bit_hd = Calculate_Bit_Hamming_Distance(states_P[stage], states_P_prime[stage])
+
+            print_and_record_results("Part C", stage, byte_hd, bit_hd)
+```
+
+---
+
+### Part D: Key-Bit Flip Experiment
+**Goal:** Fix the plaintext to zero, and instead flip a bit in the master key. Repeat configurations A, B, and C.
+
+```text
+function Execute_Part_D():
+    // SCENARIO CHANGE: Plaintext is strictly zero, but we test two different keys.
+    fixed_plaintext = initialize_array_16_bytes(0x00)
+
+    base_key = initialize_array_16_bytes(0x00)
+    // TODO: Create a second key by flipping 1 bit (e.g., setting the first byte to 0x01).
+    modified_key = flip_bit_at_position(base_key, bit_index=0)
+
+    // Define the three configurations to test
+    // TODO: Ensure the matrices and booleans match Parts A, B, and C exactly.
+    configs = [
+        { name: "Part A Config", disable_shift_rows: False, custom_mix_matrix: None },
+        { name: "Part B Config", disable_shift_rows: True,  custom_mix_matrix: None },
+        { name: "Part C Config", disable_shift_rows: False, custom_mix_matrix: M_new }
+    ]
+
+    for each conf in configs:
+        // Notice we are passing the same plaintext, but differing keys
+        states_K = AES_Encrypt_Trace(fixed_plaintext, base_key, conf)
+        states_K_prime = AES_Encrypt_Trace(fixed_plaintext, modified_key, conf)
+
+        for each logged stage:
+            // TODO: Calculate and tabulate distances to show how the AES Key Expansion
+            // immediately propagates a single key-bit flip through the data state.
+            byte_hd = Calculate_Byte_Hamming_Distance(states_K[stage], states_K_prime[stage])
+            bit_hd = Calculate_Bit_Hamming_Distance(states_K[stage], states_K_prime[stage])
+
+            print_and_record_results("Part D - " + conf.name, stage, byte_hd, bit_hd)
+```
+"""

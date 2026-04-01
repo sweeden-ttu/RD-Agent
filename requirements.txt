@@ -1,5 +1,6 @@
 # Requirements for runtime.
 pydantic-settings
+jsonschema>=4.20
 
 python-Levenshtein
 scikit-learn

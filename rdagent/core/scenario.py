@@ -62,3 +62,41 @@ class Scenario(ABC):
     def experiment_setting(self) -> str | None:
         """Get experiment setting and return as rich text string"""
         return None
+
+
+class AesAvalancheScenario(Scenario):
+    """
+    A lightweight, concrete scenario for the AES diffusion/avalanche homework experiments.
+
+    This scenario is intentionally *not* a full AES implementation. It exists to host
+    background/task descriptions and provide a stable place to hang experiment settings.
+    """
+
+    def __init__(self, *, assignment_name: str = "AES avalanche/diffusion experiments") -> None:
+        self.assignment_name = assignment_name
+
+    @property
+    def background(self) -> str:
+        return (
+            "We study diffusion (avalanche effect) in AES-128 by tracing intermediate states across rounds.\n"
+            "We compare two executions that differ by a single bit (either in plaintext or in key),\n"
+            "and compute Hamming distances at each logged stage (SubBytes/ShiftRows/MixColumns/AddRoundKey)."
+        )
+
+    @property
+    def rich_style_description(self) -> str:
+        return (
+            f"Scenario: {self.assignment_name}\n\n"
+            "Outputs should be tabular per stage/round, reporting byte- and bit-level Hamming distances."
+        )
+
+    def get_scenario_all_desc(
+        self,
+        task: Task | None = None,  # noqa: ARG002
+        filtered_tag: str | None = None,  # noqa: ARG002
+        simple_background: bool | None = None,  # noqa: ARG002
+    ) -> str:
+        return f"{self.rich_style_description}\n\nBackground:\n{self.background}"
+
+    def get_runtime_environment(self) -> str:
+        return "Python runtime (no external crypto libraries assumed for the scaffolding)."
