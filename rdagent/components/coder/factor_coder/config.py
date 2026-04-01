@@ -10,10 +10,10 @@ from rdagent.utils.env import CondaConf, Env, LocalEnv
 class FactorCoSTEERSettings(CoSTEERSettings):
     model_config = SettingsConfigDict(env_prefix="FACTOR_CoSTEER_")
 
-    data_folder: str = "git_ignore_folder/factor_implementation_source_data"
+    data_folder: str = "/Users/sweeden/crypto_proj/AES_Hypothesis/git_ignore_folder/factor_implementation_source_data"
     """Path to the folder containing financial data (default is fundamental data in Qlib)"""
 
-    data_folder_debug: str = "git_ignore_folder/factor_implementation_source_data_debug"
+    data_folder_debug: str = "/Users/sweeden/crypto_proj/AES_Hypothesis/git_ignore_folder/factor_implementation_source_data_debug"
     """Path to the folder containing partial financial data (for debugging)"""
 
     simple_background: bool = False
