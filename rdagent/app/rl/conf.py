@@ -21,7 +21,7 @@ class RLPostTrainingPropSetting(ExtendedBaseSettings):
     summarizer: str = "rdagent.scenarios.rl.dev.feedback.RLExperiment2Feedback"
 
     # Resource paths (unified directory management, similar to SFT)
-    file_path: Path = Path.cwd() / "git_ignore_folder" / "rl_files"
+    file_path: Path = Path("/Users/sweeden/crypto_proj/AES_Hypothesis/git_ignore_folder/rl_files")
     """RL resource root directory. Contains datasets/ and models/ subdirectories.
     Can be overridden via RL_FILE_PATH environment variable."""
 

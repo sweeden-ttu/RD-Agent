@@ -195,7 +195,7 @@ class DataScienceBasePropSetting(KaggleBasePropSetting):
     ensemble_time_upper_bound: bool = False
 
     user_interaction_wait_seconds: int = 6000  # seconds to wait for user interaction
-    user_interaction_mid_folder: Path = Path.cwd() / "git_ignore_folder" / "RD-Agent_user_interaction"
+    user_interaction_mid_folder: Path = Path("/Users/sweeden/crypto_proj/AES_Hypothesis/git_ignore_folder/RD-Agent_user_interaction")
 
 
 DS_RD_SETTING = DataScienceBasePropSetting()

@@ -13,8 +13,8 @@ try:
     import loguru  # noqa: F401
 except ModuleNotFoundError as _e:
     raise SystemExit(
-        "RD-Agent dependencies are missing (e.g. loguru). From the RD-Agent repo root, use conda and run:\n"
-        "  conda activate <your-env> && pip install -e .\n"
+        "rdagent dependencies are missing (e.g. loguru). From the rdagent repo root, use conda and run:\n"
+        "  conda activate RD-Agent && pip install -e .\n"
         "Homebrew Python is PEP 668–managed; install into a conda env, not system Python."
     ) from _e
 

@@ -1,7 +1,16 @@
 import os
+import sys
+from pathlib import Path
 from typing import Optional
 
 from pydantic_settings import SettingsConfigDict
+
+for _root in Path(__file__).resolve().parents:
+    if (_root / "rdagent" / "app" / "cli.py").is_file():
+        _s = str(_root)
+        if _s not in sys.path:
+            sys.path.insert(0, _s)
+        break
 
 from rdagent.components.coder.CoSTEER.config import CoSTEERSettings
 from rdagent.utils.env import CondaConf, Env, LocalEnv

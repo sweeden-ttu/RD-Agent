@@ -112,4 +112,4 @@ class KGKnowledgeGraph(UndirectedGraph):
 
 
 if __name__ == "__main__":
-    graph = KGKnowledgeGraph(path="git_ignore_folder/kg_graph.pkl", scenario=None)
+    graph = KGKnowledgeGraph(path="/Users/sweeden/crypto_proj/AES_Hypothesis/git_ignore_folder/kg_graph.pkl", scenario=None)

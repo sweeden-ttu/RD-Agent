@@ -12,11 +12,11 @@ class UIBasePropSetting(ExtendedBaseSettings):
 
     aide_path: str = "./aide"
 
-    amlt_path: str = "/data/share_folder_local/amlt"
+    amlt_path: str = ".data/amlt"
 
-    static_path: str = "./git_ignore_folder/static"
+    static_path: str = "/Users/sweeden/crypto_proj/AES_Hypothesis/git_ignore_folder/static"
 
-    trace_folder: str = "./git_ignore_folder/traces"
+    trace_folder: str = "/Users/sweeden/crypto_proj/AES_Hypothesis/git_ignore_folder/traces"
 
     enable_cache: bool = True
 

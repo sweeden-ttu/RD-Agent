@@ -15,13 +15,13 @@ class AutoRLBenchSettings(ExtendedBaseSettings):
     """AutoRL-Bench 配置
 
     环境变量前缀: AUTORL_
-    例如: AUTORL_FILE_PATH=/data/autorl_bench
+    例如: RL_FILE_PATH=./reinforcement_learning/benchmarks
     """
 
     model_config = SettingsConfigDict(env_prefix="AUTORL_", protected_namespaces=())
 
-    file_path: Path = Path.cwd() / "git_ignore_folder" / "rl_files"
-    rdagent_root: Path = Path.cwd()  # Docker 挂载用，可通过 AUTORL_RDAGENT_ROOT 覆盖
+    file_path: Path = Path("/Users/sweeden/crypto_proj/AES_Hypothesis/git_ignore_folder/rl_files")
+    rdagent_root: Path = Path("/Users/sweeden/crypto_proj/rdagent/RD-Agent")  # Docker mount; override via AUTORL_RDAGENT_ROOT
 
 
 AUTORL_BENCH_SETTING = AutoRLBenchSettings()

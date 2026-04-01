@@ -202,7 +202,7 @@ class Plotter:
 
 
 def main(
-    path="git_ignore_folder/eval_results/res_promptV220240724-060037.pkl",
+    path="/Users/sweeden/crypto_proj/AES_Hypothesis/git_ignore_folder/eval_results/res_promptV220240724-060037.pkl",
     round=1,
     title="Comparison of Different Methods",
     only_correct_format=False,

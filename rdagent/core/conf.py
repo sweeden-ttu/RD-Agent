@@ -54,7 +54,7 @@ class RDAgentSettings(ExtendedBaseSettings):
     max_kmeans_group_number: int = 40
 
     # workspace conf
-    workspace_path: Path = Path.cwd() / "git_ignore_folder" / "RD-Agent_workspace"
+    workspace_path: Path = Path("/Users/sweeden/crypto_proj/AES_Hypothesis/RD-Agent_workspace")
     workspace_ckp_size_limit: int = 0
     workspace_ckp_white_list_names: list[str] | None = None
     """
@@ -67,9 +67,7 @@ class RDAgentSettings(ExtendedBaseSettings):
 
     # pickle cache conf
     cache_with_pickle: bool = True  # whether to use pickle cache
-    pickle_cache_folder_path_str: str = str(
-        Path.cwd() / "pickle_cache/",
-    )  # the path of the folder to store the pickle cache
+    pickle_cache_folder_path_str: str = str(Path("/Users/sweeden/crypto_proj/AES_Hypothesis/pickle_cache/"))
     use_file_lock: bool = (
         True  # when calling the function with same parameters, whether to use file lock to avoid
         # executing the function multiple times

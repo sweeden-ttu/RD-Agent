@@ -38,7 +38,7 @@ class KaggleBasePropSetting(ExtendedBaseSettings):
     """Number of evolutions"""
 
     competition: str = ""
-    """Kaggle competition name, e.g., 'sf-crime'"""
+    """Kaggle competition name, e.g., 'sf-plant-growth'"""
 
     template_path: str = "rdagent/scenarios/kaggle/experiment/templates"
     """Kaggle competition base templates path"""
@@ -63,7 +63,7 @@ class KaggleBasePropSetting(ExtendedBaseSettings):
     knowledge_base_path: str = "kg_graph.pkl"
     """Advanced version of graph-based RAG"""
 
-    rag_path: str = "git_ignore_folder/kaggle_vector_base.pkl"
+    rag_path: str = "/Users/sweeden/crypto_proj/AES_Hypothesis/git_ignore_folder/kaggle_vector_base.pkl"
     """Base version of vector-based RAG"""
 
     if_using_vector_rag: bool = False

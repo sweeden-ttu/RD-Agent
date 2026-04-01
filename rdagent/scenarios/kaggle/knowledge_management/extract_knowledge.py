@@ -61,4 +61,4 @@ def process_all_case_files(directory_path: str):
 
 
 if __name__ == "__main__":
-    process_all_case_files(directory_path="git_ignore_folder/data/kaggle")
+    process_all_case_files(directory_path="/Users/sweeden/crypto_proj/AES_Hypothesis/git_ignore_folder/data/kaggle")

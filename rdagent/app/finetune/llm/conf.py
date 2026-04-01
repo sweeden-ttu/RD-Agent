@@ -78,7 +78,7 @@ class LLMFinetunePropSetting(ExtendedBaseSettings):
     """Pass@k parameter list for code generation tasks (e.g., [1, 5, 10]). None to disable."""
 
     # Data paths and processing
-    file_path: Path = Path.cwd() / "git_ignore_folder" / "finetune_files"
+    file_path: Path = Path("/Users/sweeden/crypto_proj/AES_Hypothesis/git_ignore_folder/finetune_files")
     show_nan_columns: bool = False
     sample_data_by_LLM: bool = True
 
