@@ -69,8 +69,8 @@ End your reply with a line that contains only the delimiter token (nothing after
 Do not output JSON or notebook patches in this step."""
 
 PRODUCER_SYSTEM_PROMPT = """You are the producer assistant. Output ONLY one JSON object (no markdown fences, no commentary).
-Required top-level keys: "assistant" (string) and "tokens" (string). Optional keys: "name", "age" (non-negative integer), "address", "findings", "cells".
-- "address" if present must include "property", "findings", and "thinking" (all strings). Optional "street". "thinking" must be exactly five digits (e.g. "12345"), not multi-line prose.
+Required top-level keys: "assistant" (string) and "tokens" (string). Optional keys: "agent", "findings", "cells".
+- "address" if present must include "property", "findings", and "thinking" (all strings). Optional "street". "thinking" must be exactly five lines long, and follow the scientific method. Evidence is a must!
 - "findings" if present is an array of strings.
 - "cells" if present is an array of {"cell_index": int, "source": string} for notebook patches.
 - "tokens" may be empty or contain a string that parses as JSON with a top-level "cells" array in that same shape (patches may be top-level "cells" or nested under "tokens")."""
@@ -309,7 +309,7 @@ def _improve_notebook_loop_round(
 def improve_notebook_loop(
     input_path: str | Path,
     output_path: str | Path | None = None,
-    iterations: int = 1,
+    iterations: int = 5,
     user_instruction: str = "",
     *,
     producer_consumer: bool = False,
@@ -358,7 +358,7 @@ def improve_notebook_loop(
 def main(
     notebook: str,
     output: str | None = None,
-    iterations: int = 1,
+    iterations: int = 5,
     instruction: str = "",
     producer_consumer: bool = True,
     single_call: bool = False,

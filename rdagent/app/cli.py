@@ -7,6 +7,14 @@ This will
 """
 
 import sys
+from pathlib import Path
+
+for _root in Path(__file__).resolve().parents:
+    if (_root / "rdagent" / "app" / "cli.py").is_file():
+        _s = str(_root)
+        if _s not in sys.path:
+            sys.path.insert(0, _s)
+        break
 
 from dotenv import load_dotenv
 
@@ -21,21 +29,10 @@ from typing import Optional
 import typer
 from typing_extensions import Annotated
 
-from rdagent.app.data_science.loop import main as data_science
-from rdagent.app.finetune.llm.loop import main as llm_finetune
-from rdagent.app.general_model.general_model import (
-    extract_models_and_implement as general_model,
-)
-from rdagent.app.qlib_rd_loop.factor import main as fin_factor
-from rdagent.app.qlib_rd_loop.factor_from_report import main as fin_factor_report
-from rdagent.app.qlib_rd_loop.model import main as fin_model
-from rdagent.app.qlib_rd_loop.quant import main as fin_quant
-from rdagent.app.utils.health_check import health_check
-from rdagent.app.utils.improve_notebook import improve_notebook_loop
-from rdagent.app.utils.info import collect_info
-from rdagent.log.mle_summary import grade_summary as grade_summary
+# Loop / scenario modules run a loguru preflight on import; defer imports to subcommand bodies
+# so ``python path/to/cli.py --help`` works under Homebrew Python before ``pip install -e .``.
 
-app = typer.Typer()
+app = typer.Typer(no_args_is_help=True)
 
 CheckoutOption = Annotated[bool, typer.Option("--checkout/--no-checkout", "-c/-C")]
 CheckEnvOption = Annotated[bool, typer.Option("--check-env/--no-check-env", "-e/-E")]
@@ -88,6 +85,8 @@ def fin_factor_cli(
     all_duration: Optional[str] = None,
     checkout: CheckoutOption = True,
 ):
+    from rdagent.app.qlib_rd_loop.factor import main as fin_factor
+
     fin_factor(path=path, step_n=step_n, loop_n=loop_n, all_duration=all_duration, checkout=checkout)
 
 
@@ -99,6 +98,8 @@ def fin_model_cli(
     all_duration: Optional[str] = None,
     checkout: CheckoutOption = True,
 ):
+    from rdagent.app.qlib_rd_loop.model import main as fin_model
+
     fin_model(path=path, step_n=step_n, loop_n=loop_n, all_duration=all_duration, checkout=checkout)
 
 
@@ -110,6 +111,8 @@ def fin_quant_cli(
     all_duration: Optional[str] = None,
     checkout: CheckoutOption = True,
 ):
+    from rdagent.app.qlib_rd_loop.quant import main as fin_quant
+
     fin_quant(path=path, step_n=step_n, loop_n=loop_n, all_duration=all_duration, checkout=checkout)
 
 
@@ -120,11 +123,15 @@ def fin_factor_report_cli(
     all_duration: Optional[str] = None,
     checkout: CheckoutOption = True,
 ):
+    from rdagent.app.qlib_rd_loop.factor_from_report import main as fin_factor_report
+
     fin_factor_report(report_folder=report_folder, path=path, all_duration=all_duration, checkout=checkout)
 
 
 @app.command(name="general_model")
 def general_model_cli(report_file_path: str):
+    from rdagent.app.general_model.general_model import extract_models_and_implement as general_model
+
     general_model(report_file_path)
 
 
@@ -137,6 +144,8 @@ def data_science_cli(
     timeout: Optional[str] = None,
     competition: Optional[str] = None,
 ):
+    from rdagent.app.data_science.loop import main as data_science
+
     data_science(
         path=path,
         checkout=checkout,
@@ -160,6 +169,8 @@ def llm_finetune_cli(
     loop_n: Optional[int] = None,
     timeout: Optional[str] = None,
 ):
+    from rdagent.app.finetune.llm.loop import main as llm_finetune
+
     llm_finetune(
         path=path,
         checkout=checkout,
@@ -176,6 +187,8 @@ def llm_finetune_cli(
 
 @app.command(name="grade_summary")
 def grade_summary_cli(log_folder: str):
+    from rdagent.log.mle_summary import grade_summary
+
     grade_summary(log_folder)
 
 
@@ -189,6 +202,8 @@ def health_check_cli(
     check_docker: CheckDockerOption = True,
     check_ports: CheckPortsOption = True,
 ):
+    from rdagent.app.utils.health_check import health_check
+
     health_check(check_env=check_env, check_docker=check_docker, check_ports=check_ports)
 
 
@@ -203,7 +218,7 @@ def improve_notebook_cli(
             help="Output path (default: <name>.improved.ipynb under experiment-dir)",
         ),
     ] = None,
-    iterations: Annotated[int, typer.Option("--iterations", "-n", help="Number of LLM improvement passes")] = 1,
+    iterations: Annotated[int, typer.Option("--iterations", "-n", help="Number of LLM improvement passes")] = 5,
     instruction: Annotated[
         str,
         typer.Option("--instruction", "-i", help="Extra instructions for each pass"),
@@ -234,6 +249,8 @@ def improve_notebook_cli(
     """Improve markdown and code cells in a Jupyter notebook using the configured chat model."""
     from pathlib import Path
 
+    from rdagent.app.utils.improve_notebook import improve_notebook_loop
+
     improve_notebook_loop(
         notebook,
         output_path=output,
@@ -248,6 +265,8 @@ def improve_notebook_cli(
 
 @app.command(name="collect_info")
 def collect_info_cli():
+    from rdagent.app.utils.info import collect_info
+
     collect_info()
 
 
